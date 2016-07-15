@@ -16,6 +16,27 @@ void mydebug(char *s)
 {
     perror(s);
 }
+/**将id和数据合并为包
+  *传入：id、数据
+  *返回：合成后的包
+  */
+package combine_pack(unsigned long long id,char *databuf)
+{
+    package pack;
+    pack.id = id;
+    strcpy(pack.data,databuf);
+    return pack;
+}
+/**将包拆分为id和数据
+  *传入：id指针、数据指针
+  *返回：操作结果
+  */
+int split_pack(package pack,unsigned long long *id,char *databuf)
+{
+    (*id) = pack.id;
+    strcpy(databuf,pack.data);
+    return 0;
+}
 /**初始化套接字
   *传入：服务器ip和端口
   *返回：套接字描述符
@@ -32,13 +53,14 @@ int init_sock(char *ser_ip,int ser_port)
     memset((char *) &si_ser, 0, sizeof(si_ser));
     si_ser.sin_family = AF_INET;
     si_ser.sin_port = htons(ser_port);  //写入服务器端口
-    rul = inet_aton(ser_ip , &si_other.sin_addr);   //写入服务器IP
+    rul = inet_aton(ser_ip , &si_ser.sin_addr);   //写入服务器IP
     if (rul == 0)
     {
         perror("inet_aton() failed");
         return -1;
     }
     si_ser_len = sizeof(si_ser);
+    mydebug("ok");
     return 0;
 }
 /**套接字发送
@@ -73,8 +95,8 @@ int sock_recv(unsigned long long *id,char *databuf)
     rul = recvfrom(sock, buf, pack_len, 0, (struct sockaddr *) &si_ser, &si_ser_len);
     if (rul < 0)
         perror("recv failed");
-    memcpy(&pack,buf_sock,pack_len);
-    split_pack(id,databuf);
+    memcpy(&pack,buf,pack_len);
+    split_pack(pack,id,databuf);
     return rul;
 }
 /**套接字关闭
@@ -84,24 +106,4 @@ void destory_sock()
     close(sock);
     sock = -1;
 }
-/**将id和数据合并为包
-  *传入：id、数据
-  *返回：合成后的包
-  */
-package combine_pack(unsigned long long id,char *databuf)
-{
-    package pack;
-    pack.id = id;
-    strcpy(pack.data,databuf);
-    return pack;
-}
-/**将包拆分为id和数据
-  *传入：id指针、数据指针
-  *返回：操作结果
-  */
-int split_pack(package pack,unsigned long long *id,char *databuf)
-{
-    (*id) = pack.id;
-    strcpy(databuf,pack.data);
-    return 0;
-}
+
