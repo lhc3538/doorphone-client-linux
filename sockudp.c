@@ -1,11 +1,15 @@
 /*
    doorphone udp client
 */
-#include<stdio.h> //printf
-#include<string.h> //memset
-#include<stdlib.h> //exit(0);
-#include<arpa/inet.h>
-#include<sys/socket.h>
+#include <stdio.h> //printf
+#include <string.h> //memset
+#include <stdlib.h> //exit(0);
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include "main.h"
+
+int sock = -1;   //套接字描述符
+struct sockaddr_in si_ser;    //服务器地址结构体
 
 void mydebug(char *s)
 {
@@ -19,8 +23,6 @@ void mydebug(char *s)
 int init_sock(char *ser_ip,int ser_port)
 {
     int rul;    //结果返回值
-    struct sockaddr_in si_ser;    //服务器地址结构体
-    int sock;   //套接字描述符
     if ( (sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) //创建套接字
         perror("create socket failed");
 
@@ -31,6 +33,40 @@ int init_sock(char *ser_ip,int ser_port)
     if (rul == 0)
         perror("inet_aton() failed");
     return sock;
+}
+
+int sock_send(unsigned long long id,char *databuf)
+{
+    int rul = 0;
+
+    //发送
+    rul = sendto(s, message, strlen(message) , 0 , (struct sockaddr *) &si_other, slen);
+    if (rul < 0)
+        perror("send failed");
+    return rul;
+}
+
+int sock_recv()
+{
+    if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen) == -1)
+    {
+        die("recvfrom()");
+    }
+}
+
+void destory_sock()
+{
+    close(sock);
+}
+
+package combine_pack(unsigned long long id,char *databuf)
+{
+
+}
+
+int split_pack(package pack,unsigned long long *id,char *databuf)
+{
+
 }
 
 int main(void)
