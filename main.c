@@ -1,20 +1,33 @@
 #include <stdio.h>
-#include "sockudp.h"
-void create_sock(sockudp *sock)
-{
-    sock->init = sock_init;
-    sock->send = sock_send;
-    sock->recv = sock_recv;
-    sock->destory = sock_destory;
-}
+#include "main.h"
+#include "clientudp.h"
+#include "audio.h"
+
+
 
 int main(void)
 {
-    /*sockudp sock;
-    create_sock(&sock);
-    sock.init("127.0.0.1",8081);*/
+    int rul;
+
+    clientudp client;
+    create_client(&client);
+    rul = client.init("127.0.0.1",8081);
+
+    audiocard audio;
+    create_audio(&audio);
+    rul = audio.init(22050,16,2);
+    if (rul < 0)
+        return 1;
+
+    char buf[BUFLEN];
+    while(1)
+    {
+        audio.read(buf);
+        client.send(0,buf);
+    }
+
     //sock_init("127.0.0.1",8081);
-    printf("Hello World!\n");
+    //printf("Hello World!\n");
     return 0;
 }
 

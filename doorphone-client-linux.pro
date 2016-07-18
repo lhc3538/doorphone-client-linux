@@ -4,10 +4,10 @@ CONFIG -= qt
 
 SOURCES += main.c \
     audio.c \
-    sockudp.c
+    clientudp.c
 
 HEADERS += \
     audio.h \
-    sockudp.h \
-    main.h
+    main.h \
+    clientudp.h
 

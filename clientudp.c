@@ -5,16 +5,18 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <pthread.h>
 #include "main.h"
 
 int sock = -1;   //套接字描述符
 struct sockaddr_in si_ser;    //服务器地址结构体
 int pack_len = sizeof(package); //包长度
 int si_ser_len;    //地址结构体长度
+pthread_mutex_t mutex_send; //发送函数锁
 
 void mydebug(char *s)
 {
-    perror(s);
+    printf("%s\n",s);
 }
 /**将id和数据合并为包
   *传入：id、数据
@@ -41,8 +43,12 @@ int split_pack(package pack,unsigned long long *id,char *databuf)
   *传入：服务器ip和端口
   *返回：套接字描述符
   */
-int init_sock(char *ser_ip,int ser_port)
+int client_init(char *ser_ip,int ser_port)
 {
+    if (sock != -1)
+    {
+        client_destory(); //已经初始化一次，先关闭
+    }
     int rul;    //结果返回值
     if ( (sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) //创建套接字
     {
@@ -60,6 +66,8 @@ int init_sock(char *ser_ip,int ser_port)
         return -1;
     }
     si_ser_len = sizeof(si_ser);
+
+    pthread_mutex_init(&mutex_send,NULL);  //初始化发送锁
     mydebug("ok");
     return 0;
 }
@@ -67,8 +75,9 @@ int init_sock(char *ser_ip,int ser_port)
   *传入：数据包id、数据
   *返回：发送结果
   */
-int sock_send(unsigned long long id,char *databuf)
+int client_send(unsigned long long id,char *databuf)
 {
+    pthread_mutex_lock(&mutex_send);    //加发送锁
     if (sock == -1)
         return -2;  //未初始化
     int rul;
@@ -79,13 +88,14 @@ int sock_send(unsigned long long id,char *databuf)
     rul = sendto(sock, buf, pack_len , 0 , (struct sockaddr *) &si_ser, si_ser_len);
     if (rul < 0)
         perror("send failed");
+    pthread_mutex_unlock(&mutex_send);  //解发送锁
     return 0;
 }
 /**套接字接收
   *传入：id指针、数据指针
   *返回：接受结果
   */
-int sock_recv(unsigned long long *id,char *databuf)
+int client_recv(unsigned long long *id,char *databuf)
 {
     if (sock == -1)
         return -2;  //未初始化
@@ -101,9 +111,10 @@ int sock_recv(unsigned long long *id,char *databuf)
 }
 /**套接字关闭
   */
-void destory_sock()
+void client_destory()
 {
     close(sock);
     sock = -1;
+    pthread_mutex_destroy(&mutex_send); //销毁发送锁
 }
 
