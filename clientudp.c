@@ -16,10 +16,6 @@ size_t pack_len = sizeof(package); //包长度
 socklen_t si_ser_len;    //地址结构体长度
 pthread_mutex_t mutex_send; //发送函数锁
 
-void mydebug(char *s)
-{
-    printf("%s\n",s);
-}
 /**将id和数据合并为包
   *传入：id、数据
   *返回：合成后的包

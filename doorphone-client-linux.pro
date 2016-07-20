@@ -11,3 +11,5 @@ HEADERS += \
     main.h \
     clientudp.h
 
+LIBS += -lpthread
+

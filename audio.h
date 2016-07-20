@@ -6,14 +6,14 @@ struct _audiocard {
   //output_parameter param;
 
   int (*init)(int ,int ,int );
-  int (*write)(char *);
-  int (*read)(char *);
+  int (*write)(unsigned char *);
+  int (*read)(unsigned char *);
   int (*destory)();
 };
 
 extern int audio_init(int rate,int size,int channels);
-extern int audio_write(char *databuf);
-extern int audio_read(char *databuf);
+extern int audio_write(unsigned char *databuf);
+extern int audio_read(unsigned char *databuf);
 extern int audio_destory();
 
 

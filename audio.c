@@ -42,7 +42,7 @@ int audio_init(int rate,int size,int channels)
     return rul;
 }
 
-int audio_write(char *databuf)
+int audio_write(unsigned char *databuf)
 {
     int rul;
     rul = write(fd_audio, databuf, BUFLEN); // 放音
@@ -51,7 +51,7 @@ int audio_write(char *databuf)
     return rul;
 }
 
-int audio_read(char *databuf)
+int audio_read(unsigned char *databuf)
 {
     int rul;
     rul = read(fd_audio, databuf, BUFLEN); // 录音
