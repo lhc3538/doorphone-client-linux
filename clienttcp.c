@@ -52,10 +52,12 @@ int client_tcp_init(char *ser_ip,int ser_port)
  */
 int client_tcp_sendln(char *databuf)
 {
-    int len = strlen(databuf);
-    databuf[len] = '\n';
-    databuf[len+1] = 0;
-    if (send(sock_client_tcp,databuf,len+1,0) == -1)
+    puts(databuf);
+    /*int len = 3;
+    databuf[1] = '\n';
+    databuf[2] = 0;
+    puts(databuf);*/
+    if (send(sock_client_tcp,databuf,strlen(databuf),0) == -1)
     {
         perror("tcp发送失败");
         return -1;

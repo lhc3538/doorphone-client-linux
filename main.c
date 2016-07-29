@@ -100,12 +100,17 @@ int main(void)
 
     clienttcp client_tcp;
     create_client_tcp(&client_tcp);
-    client_tcp.init("192.168.0.240",1025);
-    //client_tcp.sendln("home;3538");
-    //char buf[64];
-    //client_tcp.recvln(buf);
-    //puts(buf);
-    //return 0;
+    if (client_tcp.init("192.168.0.240",1025) == -1)
+        mydebug("连接失败");
+    if(client_tcp.sendln("home;3538\n") == -1)
+        mydebug("发送失败");
+    char buf[64];
+    while(1)
+    {
+        client_tcp.recvln(buf);
+        puts(buf);
+    }
+    return 0;
 }
 
 
