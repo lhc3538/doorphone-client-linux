@@ -1,5 +1,4 @@
 #pragma once
-#define DEFAULT_PORT 8081
 #define BUFLEN 1024
 
 typedef struct _package package;

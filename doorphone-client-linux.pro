@@ -4,12 +4,14 @@ CONFIG -= qt
 
 SOURCES += main.c \
     audio.c \
-    clientudp.c
+    clientudp.c \
+    clienttcp.c
 
 HEADERS += \
     audio.h \
     main.h \
-    clientudp.h
+    clientudp.h \
+    clienttcp.h
 
 LIBS += -lpthread
 

@@ -45,6 +45,7 @@ int audio_init(int rate,int size,int channels)
 int audio_write(unsigned char *databuf)
 {
     int rul;
+    printf("size=%d:%s\n",sizeof(databuf),databuf);
     rul = write(fd_audio, databuf, BUFLEN); // 放音
     if (rul != BUFLEN)
         perror("wrote wrong number of bytes");

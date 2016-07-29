@@ -10,7 +10,7 @@
 #include <pthread.h>
 #include "main.h"
 
-int sock_client = -1;   //套接字描述符
+int sock_client_udp = -1;   //套接字描述符
 struct sockaddr_in si_ser;    //服务器地址结构体
 size_t pack_len = sizeof(package); //包长度
 socklen_t si_ser_len;    //地址结构体长度
@@ -41,14 +41,14 @@ int split_pack(package pack,unsigned long long *id,unsigned char *databuf)
   *传入：服务器ip和端口
   *返回：套接字描述符
   */
-int client_init(char *ser_ip,int ser_port)
+int client_udp_init(char *ser_ip,int ser_port)
 {
-    if (sock_client != -1)
+    if (sock_client_udp != -1)
     {
         //client_destory(); //已经初始化一次，先关闭
     }
     int rul;    //结果返回值
-    if ( (sock_client = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) //创建套接字
+    if ( (sock_client_udp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) //创建套接字
     {
         perror("create socket failed");
         return -1;
@@ -73,17 +73,17 @@ int client_init(char *ser_ip,int ser_port)
   *传入：数据包id、数据
   *返回：发送结果
   */
-int client_send(unsigned long long id,unsigned char *databuf)
+int client_udp_send(unsigned long long id,unsigned char *databuf)
 {
     pthread_mutex_lock(&mutex_send);    //加发送锁
-    if (sock_client == -1)
+    if (sock_client_udp == -1)
         return -2;  //未初始化
     int rul;
     char buf[pack_len];
     package pack = combine_pack(id,databuf);    //合成包
     memcpy(buf,&pack,pack_len); //结构体序列化
     //发送
-    rul = sendto(sock_client, buf, pack_len , 0 , (struct sockaddr *) &si_ser, si_ser_len);
+    rul = sendto(sock_client_udp, buf, pack_len , 0 , (struct sockaddr *) &si_ser, si_ser_len);
     if (rul < 0)
         perror("send failed");
     pthread_mutex_unlock(&mutex_send);  //解发送锁
@@ -93,14 +93,14 @@ int client_send(unsigned long long id,unsigned char *databuf)
   *传入：id指针、数据指针
   *返回：接受结果
   */
-int client_recv(unsigned long long *id,unsigned char *databuf)
+int client_udp_recv(unsigned long long *id,unsigned char *databuf)
 {
-    if (sock_client == -1)
+    if (sock_client_udp == -1)
         return -2;  //未初始化
     int rul;
     char buf[pack_len];
     package pack;
-    rul = recvfrom(sock_client, buf, pack_len, 0, (struct sockaddr *) &si_ser, &si_ser_len);
+    rul = recvfrom(sock_client_udp, buf, pack_len, 0, (struct sockaddr *) &si_ser, &si_ser_len);
     if (rul < 0)
         perror("recv failed");
     memcpy(&pack,buf,pack_len);
@@ -109,10 +109,10 @@ int client_recv(unsigned long long *id,unsigned char *databuf)
 }
 /**套接字关闭
   */
-void client_destory()
+void client_udp_destory()
 {
-    close(sock_client);
-    sock_client = -1;
+    close(sock_client_udp);
+    sock_client_udp = -1;
     pthread_mutex_destroy(&mutex_send); //销毁发送锁
 }
 

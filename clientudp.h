@@ -11,16 +11,16 @@ struct _cilentudp {
   int (*destory)();
 };
 
-extern int client_init(char *ser_ip,int ser_port);
-extern int client_send(unsigned long long id,unsigned char *databuf);
-extern int client_recv(unsigned long long *id,unsigned char *databuf);
-extern int client_destory();
+extern int client_udp_init(char *ser_ip,int ser_port);
+extern int client_udp_send(unsigned long long id,unsigned char *databuf);
+extern int client_udp_recv(unsigned long long *id,unsigned char *databuf);
+extern int client_udp_destory();
 
 
 void create_client_udp(clientudp *sock)
 {
-    sock->init = client_init;
-    sock->send = client_send;
-    sock->recv = client_recv;
-    sock->destory = client_destory;
+    sock->init = client_udp_init;
+    sock->send = client_udp_send;
+    sock->recv = client_udp_recv;
+    sock->destory = client_udp_destory;
 }
