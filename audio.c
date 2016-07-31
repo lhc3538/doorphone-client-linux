@@ -64,4 +64,5 @@ int audio_read(unsigned char *databuf)
 int audio_destory()
 {
     close(fd_audio);
+    return 0;
 }

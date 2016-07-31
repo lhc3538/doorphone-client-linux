@@ -5,13 +5,17 @@ CONFIG -= qt
 SOURCES += main.c \
     audio.c \
     clientudp.c \
-    clienttcp.c
+    clienttcp.c \
+    servicetransmit.c
 
 HEADERS += \
     audio.h \
     main.h \
     clientudp.h \
-    clienttcp.h
+    clienttcp.h \
+    servicetransmit.h
 
 LIBS += -lpthread
+
+DISTFILES +=
 

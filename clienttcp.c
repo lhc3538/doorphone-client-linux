@@ -52,7 +52,7 @@ int client_tcp_init(char *ser_ip,int ser_port)
  */
 int client_tcp_sendln(char *databuf)
 {
-    puts(databuf);
+    //puts(databuf);
     /*int len = 3;
     databuf[1] = '\n';
     databuf[2] = 0;
@@ -80,8 +80,8 @@ int client_tcp_recvln(char *databuf)
         return -1;
     }
     //去掉换行符
-    if (databuf[len-1] == '\n')
-        databuf[len-1] = 0;
+//    if (databuf[len-1] == '\n')
+//        databuf[len-1] = 0;
     return 0;
 }
 

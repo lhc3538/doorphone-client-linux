@@ -109,10 +109,11 @@ int client_udp_recv(unsigned long long *id,unsigned char *databuf)
 }
 /**套接字关闭
   */
-void client_udp_destory()
+int client_udp_destory()
 {
     close(sock_client_udp);
     sock_client_udp = -1;
     pthread_mutex_destroy(&mutex_send); //销毁发送锁
+    return 0;
 }
 
