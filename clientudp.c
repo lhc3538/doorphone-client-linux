@@ -66,7 +66,7 @@ int client_udp_init(char *ser_ip,int ser_port)
     si_ser_len = sizeof(si_ser);
 
     pthread_mutex_init(&mutex_send,NULL);  //初始化发送锁
-    mydebug("ok");
+    mydebug("udp初始化完成");
     return 0;
 }
 /**套接字发送

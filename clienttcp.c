@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
 
 int sock_client_tcp = -1;
 
@@ -73,11 +74,18 @@ int client_tcp_sendln(char *databuf)
 int client_tcp_recvln(char *databuf)
 {
     int len;
-    len = recv(sock_client_tcp,databuf,sizeof(databuf),0);
-    if (len == -1)
+    len = read(sock_client_tcp,databuf,sizeof(databuf));
+    if (len <= 0)
     {
         perror("tcp接收失败");
         return -1;
+    }
+    else if (len < 4)   //异常处理，java的println貌似发两个东西
+    {
+        printf("err len = %d\n",len);
+        printf("%d,%d",databuf[0],databuf[1]);
+        databuf[0] = 0;
+        return 0;
     }
     //去掉换行符
 //    if (databuf[len-1] == '\n')

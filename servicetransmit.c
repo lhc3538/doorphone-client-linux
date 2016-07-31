@@ -78,6 +78,7 @@ int start_trans_witn_remote(char *serIp,int serPort)
     if ((pthread_create(&thread_from_remote, NULL, fun_from_remote, NULL)) < 0)
         perror("create thread_from_remote failed!");
 
+    mydebug("双线程开启");
 //    if (thread_to_remote != 0)
 //        pthread_join(thread_to_remote,NULL);//等待线程退出
 //    if (thread_from_remote != 0)

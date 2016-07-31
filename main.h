@@ -8,4 +8,4 @@ struct _package
     unsigned char data[BUFLEN];    //audio data
 };
 
-
+extern void mydebug(char *s);

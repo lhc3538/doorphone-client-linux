@@ -13,8 +13,10 @@
  */
 void mydebug(char *s)
 {
-    //printf("%s\n",s);
+    printf("%s\n",s);
 }
+
+
 int main(void)
 {
     int rul;
@@ -25,20 +27,30 @@ int main(void)
         mydebug("连接失败");
     if(client_tcp.sendln("home;3538\n") == -1)
         mydebug("发送失败");
-    char buf[64];
+    char comdata[128];
     servicetransmit service_transmit;
     create_service_transmit(&service_transmit);
     while(1)
     {
-        client_tcp.recvln(buf);
-        puts(buf);
-        if (buf[0] == 'c')
-            service_transmit.stop();
-        else if (buf[0] == 's')
-            mydebug("与服务器成功建立连接");
+        if (client_tcp.recvln(comdata) == -1)
+        {
+            mydebug("服务器断开连接");
+            break;
+        }
         else
-            service_transmit.run("192.168.0.240",atoi(buf));
+        {
+            if (strlen(comdata) == 0)
+                continue;
+            else if (comdata[0] == 'c')
+                service_transmit.stop();
+            else if (comdata[0] == 's')
+                mydebug("与服务器成功建立连接");
+            else
+                service_transmit.run("192.168.0.240",atoi(comdata));
+            mydebug(comdata);
+        }
     }
+    client_tcp.destory();
     return 0;
 }
 
